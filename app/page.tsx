@@ -90,7 +90,7 @@ export default function Arena() {
   // X Login
   const handleXLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
+      provider: 'x',
       options: {
         redirectTo: window.location.origin
       }

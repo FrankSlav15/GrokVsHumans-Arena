@@ -92,7 +92,7 @@ export default function Arena() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'x',
       options: {
-        redirectTo: window.location.origin
+        redirectTo: 'https://grokvshumans.de'
       }
     })
     if (error) console.error('Login error:', error)

@@ -22,7 +22,22 @@ export default function Arena() {
   const [threads, setThreads] = useState<Thread[]>([])
   const [filter, setFilter] = useState<'all' | 'battle' | 'meme' | 'ai_content'>('all')
   const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
 
+  // Check if user is logged in
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Fetch threads
   useEffect(() => {
     async function fetchThreads() {
       const { data, error } = await supabase
@@ -46,6 +61,11 @@ export default function Arena() {
     : threads.filter(t => t.type === filter)
 
   const handleVote = async (id: string, voteType: 'human' | 'grok') => {
+    if (!user) {
+      alert('Please login with X to vote!')
+      return
+    }
+
     const thread = threads.find(t => t.id === id)
     if (!thread || thread.type !== 'battle') return
 
@@ -67,16 +87,74 @@ export default function Arena() {
     }
   }
 
+  // X Login
+  const handleXLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'twitter',
+      options: {
+        redirectTo: window.location.origin
+      }
+    })
+    if (error) console.error('Login error:', error)
+  }
+
+  // Logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+  }
+
   if (loading) {
     return <div className="container">Loading Arena...</div>
   }
 
   return (
     <div className="container">
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>GrokVsHumans Arena</h1>
-      <p style={{ color: '#888', marginBottom: '30px' }}>
-        {filteredThreads.length} threads • Real-time Grok vs Humans
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div>
+          <h1 style={{ fontSize: '2.5rem', marginBottom: '5px' }}>GrokVsHumans Arena</h1>
+          <p style={{ color: '#888' }}>
+            {filteredThreads.length} threads • Real-time Grok vs Humans
+          </p>
+        </div>
+
+        {/* X Login / User Info */}
+        {user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ color: '#888' }}>Logged in as @{user.user_metadata?.user_name || 'X User'}</span>
+            <button 
+              onClick={handleLogout}
+              style={{
+                padding: '8px 16px',
+                background: '#333',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={handleXLogin}
+            style={{
+              padding: '12px 24px',
+              background: '#000',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            🐦 Login with X
+          </button>
+        )}
+      </div>
 
       {/* Filter Tabs */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', flexWrap: 'wrap' }}>

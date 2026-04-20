@@ -3,8 +3,8 @@ const fs = require('fs')
 const path = require('path')
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  'https://lrnsatuxwefptqweunpk.supabase.co',
+  'sb_publishable_fKA7NXh8T2m42XTJvndu8w_PsgKNYJ3'
 )
 
 async function importData() {

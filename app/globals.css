@@ -1,13 +1,70 @@
+/* ============================================= */
+/* Base / Reset (from your old main.css) */
+/* ============================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a0a1f;color:#fff;line-height:1.4}
+
+/* ============================================= */
+/* Typography & Colors (exact from old site) */
+/* ============================================= */
+:root{--purple:rgb(168 85 247);--bg-dark:#0a0a1f;--text-muted:#a1a1aa;--border-purple:rgba(168,85,247,.3)}
+.page__title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:700;letter-spacing:-0.04em;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.6);text-align:center;margin-bottom:.75rem}
+@media(min-width:768px){.page__title{font-size:4.5rem}}
+@media(min-width:1024px){.page__title{font-size:5.5rem}}
+
+/* ============================================= */
+/* Header (simplified but matching old style) */
+/* ============================================= */
+.header{position:fixed;top:0;left:0;width:100%;background:rgba(10,10,31,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(168,85,247,.2);z-index:50;height:4rem}
+.header__inner{max-width:1280px;margin:0 auto;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;height:100%}
+.header__logo-row{display:flex;align-items:center}
+.header__logo-link{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:#fff}
+.header__logo-circle{width:42px;height:42px;background:linear-gradient(135deg,rgb(168 85 247),#22d3ee);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;box-shadow:0 0 0 4px rgba(168,85,247,.3)}
+.header__title{font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:700;letter-spacing:-0.04em}
+.header__nav{display:flex;gap:2.25rem}
+.nav-link{color:#e5e7eb;text-decoration:none;font-weight:500;transition:color .2s}
+.nav-link:hover,.nav-link.active{color:rgb(168 85 247)}
+
+/* ============================================= */
+/* Rotating Background (from your old common.js) */
+/* ============================================= */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #0a0a0a;
-  color: #ffffff;
+  background-size: cover;
+  background-position: 50% 35%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+/* ============================================= */
+/* Cards (matching old site) */
+/* ============================================= */
+.content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;padding-top:2.5rem;padding-bottom:4rem}
+@media(min-width:1024px){.content-grid{grid-template-columns:repeat(3,1fr);gap:2rem}}
+
+.card{background:#18181b;border-radius:1rem;overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 10px 15px -3px rgb(0 0 0 / .3);display:flex;flex-direction:column;height:100%}
+.card:hover{transform:translateY(-4px);box-shadow:0 0 30px 12px rgba(168,85,247,.5)}
+
+.card__media{position:relative;height:200px;flex-shrink:0;background:#27272a}
+.card__media img{width:100%;height:100%;object-fit:cover}
+
+.card__content{padding:1rem;flex:1;display:flex;flex-direction:column}
+.card__title{font-size:1.125rem;font-weight:600;line-height:1.3;margin-top:auto;margin-bottom:.5rem;min-height:2.6rem;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card__description{font-size:.875rem;color:#a1a1aa;line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ============================================= */
+/* Modal (matching old site) */
+/* ============================================= */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);align-items:center;justify-content:center;z-index:10000;padding:0;overflow:hidden}
+.modal__content{background:#18181b;border-radius:1.5rem;max-width:1024px;width:100%;max-height:94vh;margin:1rem;border:1px solid var(--border-purple);box-shadow:0 25px 50px -12px rgb(0 0 0 / .25);overflow:hidden;position:relative;display:flex;flex-direction:column}
+
+/* ============================================= */
+/* Footer (minimal) */
+/* ============================================= */
+.footer{background:#0a0a1f;border-top:1px solid rgba(168,85,247,.2);padding:3rem 1.5rem 2rem;text-align:center;font-size:.875rem;color:#a1a1aa}
+.footer__container{max-width:1280px;margin:0 auto}
+
+/* ============================================= */
+/* Global Background Overlay (from old site) */
+/* ============================================= */
+body::before{content:'';position:fixed;inset:0;background:rgba(10,10,31,.65);z-index:1;pointer-events:none}

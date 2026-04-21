@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import AuthButton from './components/AuthButton'
 
 export const metadata: Metadata = {
   title: 'GrokVsHumans Arena',
@@ -17,7 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Simplified Header matching old site style */}
         <header className="header">
           <div className="header__inner">
             <div className="header__logo-row">
@@ -34,15 +34,12 @@ export default function RootLayout({
               <a href="#ai" className="nav-link">AI Content</a>
             </nav>
 
-            <div id="auth-section">
-              {/* X Login button will be injected by the page */}
-            </div>
+            <AuthButton />
           </div>
         </header>
 
         <main>{children}</main>
 
-        {/* Minimal Footer */}
         <footer className="footer">
           <div className="footer__container">
             <p>© {new Date().getFullYear()} GrokVsHumans • Built with ❤️ for the community</p>

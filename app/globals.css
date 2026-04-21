@@ -65,6 +65,19 @@ body {
 .footer__container{max-width:1280px;margin:0 auto}
 
 /* ============================================= */
-/* Global Background Overlay (from old site) */
+/* Global Background Overlay - FIXED */
 /* ============================================= */
-body::before{content:'';position:fixed;inset:0;background:rgba(10,10,31,.65);z-index:1;pointer-events:none}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 31, 0.45);   /* Lighter overlay so content is visible */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Make sure main content is above the overlay */
+main, .container {
+  position: relative;
+  z-index: 2;
+}

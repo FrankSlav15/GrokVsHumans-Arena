@@ -226,4 +226,100 @@ export default function Arena() {
                   Human <span className="vote-count">{thread.votes_human}</span>
                 </div>
                 <div 
-                  onClick={(e) =>
+                  onClick={(e) => { e.stopPropagation(); handleVote(thread.id, 'grok') }}
+                  className="grok-bar"
+                >
+                  Grok <span className="vote-count">{thread.votes_grok}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Infinite Scroll Trigger */}
+      <div ref={observerTarget} style={{ height: '60px', marginTop: '20px', textAlign: 'center', color: '#666' }}>
+        {hasMore ? 'Loading more threads...' : 'No more threads'}
+      </div>
+
+      {/* Thread Detail Modal (old style) */}
+      {selectedThread && (
+        <div className="modal" style={{ display: 'flex' }} onClick={() => setSelectedThread(null)}>
+          <div className="modal__content" onClick={e => e.stopPropagation()}>
+            <button 
+              onClick={() => setSelectedThread(null)}
+              style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: '#fff', fontSize: '28px', cursor: 'pointer' }}
+            >
+              ×
+            </button>
+
+            <div style={{ padding: '32px' }}>
+              <div style={{ marginBottom: '16px' }}>
+                <span style={{ 
+                  background: selectedThread.type === 'battle' ? '#4ade80' : selectedThread.type === 'meme' ? '#fbbf24' : '#60a5fa',
+                  color: '#000',
+                  padding: '6px 14px',
+                  borderRadius: '9999px',
+                  fontSize: '13px',
+                  fontWeight: 'bold'
+                }}>
+                  {selectedThread.type.toUpperCase()}
+                </span>
+              </div>
+
+              <h1 style={{ fontSize: '2rem', marginBottom: '16px' }}>{selectedThread.title}</h1>
+              
+              <p style={{ fontSize: '1.1rem', color: '#ccc', lineHeight: '1.7', marginBottom: '24px' }}>
+                {selectedThread.description || selectedThread.content}
+              </p>
+
+              {selectedThread.image && (
+                <img 
+                  src={selectedThread.image} 
+                  alt={selectedThread.title}
+                  style={{ width: '100%', borderRadius: '12px', marginBottom: '24px' }}
+                />
+              )}
+
+              {/* Thread Conversation Placeholder */}
+              <div style={{ background: '#1a1a1a', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+                <h3 style={{ marginBottom: '16px', color: '#888' }}>Conversation Thread</h3>
+                <div style={{ color: '#ccc', lineHeight: '1.7' }}>
+                  {selectedThread.content || 'Full thread conversation will appear here.'}
+                </div>
+              </div>
+
+              {selectedThread.x_link && (
+                <a 
+                  href={selectedThread.x_link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#a855f7', textDecoration: 'none', fontWeight: 'bold' }}
+                >
+                  View full thread on X →
+                </a>
+              )}
+
+              {selectedThread.type === 'battle' && (
+                <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
+                  <button 
+                    onClick={() => handleVote(selectedThread.id, 'human')}
+                    style={{ flex: 1, padding: '16px', background: '#9f1239', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px' }}
+                  >
+                    🧑 Human Wins ({selectedThread.votes_human})
+                  </button>
+                  <button 
+                    onClick={() => handleVote(selectedThread.id, 'grok')}
+                    style={{ flex: 1, padding: '16px', background: '#6b21a8', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px' }}
+                  >
+                    🤖 Grok Wins ({selectedThread.votes_grok})
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

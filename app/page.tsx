@@ -37,6 +37,28 @@ export default function Arena() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Rotating Background (from your old common.js)
+  useEffect(() => {
+    const bgs = [
+      '/assets/images/backgrounds/bg1.webp','/assets/images/backgrounds/bg2.webp',
+      '/assets/images/backgrounds/bg3.webp','/assets/images/backgrounds/bg4.webp',
+      '/assets/images/backgrounds/bg5.webp','/assets/images/backgrounds/bg6.webp',
+      '/assets/images/backgrounds/bg7.webp','/assets/images/backgrounds/bg8.webp',
+      '/assets/images/backgrounds/bg9.webp','/assets/images/backgrounds/bg10.webp',
+      '/assets/images/backgrounds/bg11.webp','/assets/images/backgrounds/bg12.webp',
+      '/assets/images/backgrounds/bg13.webp','/assets/images/backgrounds/bg14.webp',
+      '/assets/images/backgrounds/bg15.webp','/assets/images/backgrounds/bg16.webp',
+      '/assets/images/backgrounds/bg17.webp','/assets/images/backgrounds/bg18.webp',
+      '/assets/images/backgrounds/bg19.webp','/assets/images/backgrounds/bg20.webp'
+    ]
+    const randomBg = bgs[Math.floor(Math.random() * bgs.length)]
+    document.body.style.backgroundImage = `url('${randomBg}')`
+    document.body.style.backgroundPosition = '50% 35%'
+    document.body.style.backgroundSize = 'cover'
+    document.body.style.backgroundRepeat = 'no-repeat'
+    document.body.style.backgroundAttachment = 'fixed'
+  }, [])
+
   // Fetch threads with pagination
   const fetchThreads = async (pageNum: number) => {
     const from = (pageNum - 1) * 12
@@ -52,7 +74,6 @@ export default function Arena() {
       console.error('Error:', error)
       return []
     }
-
     return data || []
   }
 
@@ -67,7 +88,7 @@ export default function Arena() {
     loadInitial()
   }, [])
 
-  // Infinite scroll observer
+  // Infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       async (entries) => {
@@ -131,29 +152,17 @@ export default function Arena() {
   }
 
   return (
-    <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '5px' }}>GrokVsHumans Arena</h1>
-          <p style={{ color: '#888' }}>{filteredThreads.length} threads • Real-time Grok vs Humans</p>
-        </div>
-
-        {user ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ color: '#888' }}>Logged in as @{user.user_metadata?.user_name}</span>
-            <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#333', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-              Logout
-            </button>
-          </div>
-        ) : (
-          <button onClick={handleXLogin} style={{ padding: '12px 24px', background: '#000', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
-            🐦 Login with X
-          </button>
-        )}
+    <div className="container" style={{ paddingTop: '6rem' }}>
+      {/* Hero Title matching old site style */}
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 className="page__title">GrokVsHumans Arena</h1>
+        <p style={{ color: '#e5e7eb', fontSize: '1.25rem' }}>
+          {filteredThreads.length} threads • Real-time Grok vs Humans
+        </p>
       </div>
 
-      {/* Filter Tabs */}
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', flexWrap: 'wrap' }}>
+      {/* Filter Tabs (styled like old sticky tabs) */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', flexWrap: 'wrap', justifyContent: 'center' }}>
         {[
           { label: 'All', value: 'all' },
           { label: 'Battles (Vote)', value: 'battle' },
@@ -166,11 +175,12 @@ export default function Arena() {
             style={{
               padding: '10px 20px',
               border: 'none',
-              borderRadius: '6px',
-              background: filter === tab.value ? '#fff' : '#222',
-              color: filter === tab.value ? '#000' : '#fff',
+              borderRadius: '9999px',
+              background: filter === tab.value ? 'var(--purple)' : '#18181b',
+              color: filter === tab.value ? '#fff' : '#e5e7eb',
               cursor: 'pointer',
-              fontWeight: filter === tab.value ? 'bold' : 'normal'
+              fontWeight: 500,
+              transition: 'all 0.2s'
             }}
           >
             {tab.label}
@@ -178,180 +188,42 @@ export default function Arena() {
         ))}
       </div>
 
-      {/* Infinite Scroll Grid */}
-      <div style={{ display: 'grid', gap: '20px' }}>
+      {/* Infinite Scroll Grid (old card style) */}
+      <div className="content-grid">
         {filteredThreads.map((thread) => (
           <div 
             key={thread.id} 
             onClick={() => setSelectedThread(thread)}
-            style={{
-              border: '1px solid #333',
-              borderRadius: '12px',
-              padding: '24px',
-              background: '#111',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
+            className="card"
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ 
-                background: thread.type === 'battle' ? '#4ade80' : thread.type === 'meme' ? '#fbbf24' : '#60a5fa',
-                color: '#000',
-                padding: '4px 12px',
-                borderRadius: '4px',
-                fontSize: '12px',
-                fontWeight: 'bold'
-              }}>
-                {thread.type.toUpperCase()}
-              </span>
-              <span style={{ color: '#666', fontSize: '14px' }}>
-                {new Date(thread.created_at).toLocaleDateString()}
-              </span>
+            <div className="card__media">
+              {thread.image && <img src={thread.image} alt={thread.title} />}
             </div>
+            <div className="card__content">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ 
+                  background: thread.type === 'battle' ? '#4ade80' : thread.type === 'meme' ? '#fbbf24' : '#60a5fa',
+                  color: '#000',
+                  padding: '2px 10px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
+                  fontWeight: 'bold'
+                }}>
+                  {thread.type.toUpperCase()}
+                </span>
+              </div>
 
-            <h2 style={{ margin: '0 0 12px 0', fontSize: '1.4rem' }}>{thread.title}</h2>
-            <p style={{ color: '#ccc', lineHeight: '1.6', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {thread.description || thread.content}
-            </p>
-
-            {thread.image && (
-              <img 
-                src={thread.image} 
-                alt={thread.title}
-                style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', marginTop: '16px' }}
-              />
-            )}
+              <h3 className="card__title">{thread.title}</h3>
+              <p className="card__description">{thread.description || thread.content}</p>
+            </div>
 
             {thread.type === 'battle' && (
-              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                <div style={{ flex: 1, textAlign: 'center', padding: '8px', background: '#1a1a1a', borderRadius: '6px' }}>
-                  🧑 {thread.votes_human}
-                </div>
-                <div style={{ flex: 1, textAlign: 'center', padding: '8px', background: '#1a1a1a', borderRadius: '6px' }}>
-                  🤖 {thread.votes_grok}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Infinite Scroll Trigger */}
-      <div ref={observerTarget} style={{ height: '50px', marginTop: '40px' }}>
-        {hasMore && <div style={{ textAlign: 'center', color: '#666' }}>Loading more...</div>}
-        {!hasMore && threads.length > 0 && <div style={{ textAlign: 'center', color: '#666' }}>No more threads</div>}
-      </div>
-
-      {/* Thread Detail Modal */}
-      {selectedThread && (
-        <div 
-          onClick={() => setSelectedThread(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px'
-          }}
-        >
-          <div 
-            onClick={e => e.stopPropagation()}
-            style={{
-              background: '#111',
-              borderRadius: '16px',
-              maxWidth: '800px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              padding: '32px'
-            }}
-          >
-            <button 
-              onClick={() => setSelectedThread(null)}
-              style={{ float: 'right', background: 'none', border: 'none', color: '#888', fontSize: '24px', cursor: 'pointer' }}
-            >
-              ×
-            </button>
-
-            <div style={{ marginBottom: '24px' }}>
-              <span style={{ 
-                background: selectedThread.type === 'battle' ? '#4ade80' : selectedThread.type === 'meme' ? '#fbbf24' : '#60a5fa',
-                color: '#000',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 'bold'
-              }}>
-                {selectedThread.type.toUpperCase()}
-              </span>
-            </div>
-
-            <h1 style={{ fontSize: '2rem', marginBottom: '16px' }}>{selectedThread.title}</h1>
-            
-            <p style={{ fontSize: '1.1rem', color: '#ccc', lineHeight: '1.7', marginBottom: '24px' }}>
-              {selectedThread.description || selectedThread.content}
-            </p>
-
-            {selectedThread.image && (
-              <img 
-                src={selectedThread.image} 
-                alt={selectedThread.title}
-                style={{ width: '100%', borderRadius: '12px', marginBottom: '24px' }}
-              />
-            )}
-
-            {/* Thread Conversation View */}
-            <div style={{ background: '#1a1a1a', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-              <h3 style={{ marginBottom: '16px', color: '#888' }}>Conversation Thread</h3>
-              <div style={{ color: '#ccc', lineHeight: '1.7' }}>
-                {selectedThread.content || 'Full thread conversation will be displayed here. The back-and-forth between humans and Grok is captured in the original data.'}
-              </div>
-            </div>
-
-            {selectedThread.x_link && (
-              <a 
-                href={selectedThread.x_link} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 'bold' }}
-              >
-                View full thread on X →
-              </a>
-            )}
-
-            {selectedThread.type === 'battle' && (
-              <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
-                <button 
-                  onClick={() => handleVote(selectedThread.id, 'human')}
-                  style={{ flex: 1, padding: '16px', background: '#22c55e', color: '#000', border: 'none', borderRadius: '10px', fontWeight: 'bold', fontSize: '16px' }}
+              <div className="card__vote-bar">
+                <div 
+                  onClick={(e) => { e.stopPropagation(); handleVote(thread.id, 'human') }}
+                  className="human-bar"
                 >
-                  🧑 Human Wins ({selectedThread.votes_human})
-                </button>
-                <button 
-                  onClick={() => handleVote(selectedThread.id, 'grok')}
-                  style={{ flex: 1, padding: '16px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 'bold', fontSize: '16px' }}
-                >
-                  🤖 Grok Wins ({selectedThread.votes_grok})
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+                  Human <span className="vote-count">{thread.votes_human}</span>
+                </div>
+                <div 
+                  onClick={(e) =>

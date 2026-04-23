@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Main Header - Logo + Filter Bar + Auth */}
+        {/* Clean Header - Logo + Title + Auth */}
         <header style={{
           position: 'fixed',
           top: 0,
@@ -36,52 +36,42 @@ export default function RootLayout({
             height: '64px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '24px'
+            justifyContent: 'space-between'
           }}>
             {/* Left: Logo + Title */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: '#fff' }}>
-                <div style={{
-                  width: '42px',
-                  height: '42px',
-                  background: 'linear-gradient(135deg, #a855f7, #22d3ee)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.4rem',
-                  fontWeight: '700',
-                  color: '#fff',
-                  boxShadow: '0 0 0 4px rgba(168, 85, 247, 0.3)'
-                }}>
-                  G
-                </div>
-                <span style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: '1.75rem',
-                  fontWeight: '700',
-                  letterSpacing: '-0.04em'
-                }}>
-                  GrokVsHumans
-                </span>
-              </a>
-            </div>
-
-            {/* Center: Sticky Filter Bar */}
-            <div id="filter-bar" style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              background: 'rgba(24, 24, 27, 0.8)',
-              padding: '8px 16px',
-              borderRadius: '9999px',
-              border: '1px solid #27272a'
+            <a href="/" style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px', 
+              textDecoration: 'none', 
+              color: '#fff' 
             }}>
-              {/* Filter tabs will be injected here by page.tsx */}
-            </div>
+              <div style={{
+                width: '42px',
+                height: '42px',
+                background: 'linear-gradient(135deg, #a855f7, #22d3ee)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.4rem',
+                fontWeight: '700',
+                color: '#fff',
+                boxShadow: '0 0 0 4px rgba(168, 85, 247, 0.3)'
+              }}>
+                G
+              </div>
+              <span style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: '1.75rem',
+                fontWeight: '700',
+                letterSpacing: '-0.04em'
+              }}>
+                GrokVsHumans
+              </span>
+            </a>
 
-            {/* Right: Auth */}
+            {/* Right: Auth Button */}
             <AuthButton />
           </div>
         </header>

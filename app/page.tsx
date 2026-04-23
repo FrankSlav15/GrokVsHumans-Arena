@@ -40,6 +40,28 @@ export default function Arena() {
   const [hasMore, setHasMore] = useState(true)
   const observerTarget = useRef<HTMLDivElement>(null)
 
+  // Rotating Background (RESTORED)
+  useEffect(() => {
+    const bgs = [
+      '/assets/images/backgrounds/bg1.webp','/assets/images/backgrounds/bg2.webp',
+      '/assets/images/backgrounds/bg3.webp','/assets/images/backgrounds/bg4.webp',
+      '/assets/images/backgrounds/bg5.webp','/assets/images/backgrounds/bg6.webp',
+      '/assets/images/backgrounds/bg7.webp','/assets/images/backgrounds/bg8.webp',
+      '/assets/images/backgrounds/bg9.webp','/assets/images/backgrounds/bg10.webp',
+      '/assets/images/backgrounds/bg11.webp','/assets/images/backgrounds/bg12.webp',
+      '/assets/images/backgrounds/bg13.webp','/assets/images/backgrounds/bg14.webp',
+      '/assets/images/backgrounds/bg15.webp','/assets/images/backgrounds/bg16.webp',
+      '/assets/images/backgrounds/bg17.webp','/assets/images/backgrounds/bg18.webp',
+      '/assets/images/backgrounds/bg19.webp','/assets/images/backgrounds/bg20.webp'
+    ]
+    const randomBg = bgs[Math.floor(Math.random() * bgs.length)]
+    document.body.style.backgroundImage = `url('${randomBg}')`
+    document.body.style.backgroundPosition = '50% 35%'
+    document.body.style.backgroundSize = 'cover'
+    document.body.style.backgroundRepeat = 'no-repeat'
+    document.body.style.backgroundAttachment = 'fixed'
+  }, [])
+
   // Auth
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
@@ -163,6 +185,75 @@ export default function Arena() {
 
   return (
     <div>
+      {/* Sticky Filter Bar (RESTORED) */}
+      <div style={{
+        position: 'sticky',
+        top: '64px',
+        zIndex: 40,
+        background: 'rgba(10, 10, 31, 0.95)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(168, 85, 247, 0.2)',
+        padding: '12px 0'
+      }}>
+        <div style={{ 
+          maxWidth: '1280px', 
+          margin: '0 auto', 
+          padding: '0 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap'
+        }}>
+          {/* Filter Tabs */}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {[
+              { label: 'All', value: 'all' },
+              { label: 'Battles (Vote)', value: 'battle' },
+              { label: 'Memes', value: 'meme' },
+              { label: 'AI Content', value: 'ai_content' }
+            ].map(tab => (
+              <button
+                key={tab.value}
+                onClick={() => setFilter(tab.value as any)}
+                style={{
+                  padding: '10px 20px',
+                  border: 'none',
+                  borderRadius: '9999px',
+                  background: filter === tab.value ? '#a855f7' : '#18181b',
+                  color: filter === tab.value ? '#fff' : '#e5e7eb',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Ordering Dropdown */}
+          <select 
+            value={orderBy} 
+            onChange={(e) => setOrderBy(e.target.value as OrderBy)}
+            style={{
+              padding: '10px 16px',
+              background: '#18181b',
+              border: '1px solid #27272a',
+              borderRadius: '8px',
+              color: '#e5e7eb',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="most_reactions">Most Reactions</option>
+            <option value="most_comments">Most Comments</option>
+          </select>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <div style={{ 
         textAlign: 'center', 

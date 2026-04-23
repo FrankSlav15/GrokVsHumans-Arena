@@ -16,7 +16,6 @@ interface Thread {
   votes_human: number
   votes_grok: number
   created_at: string
-  // New fields for reactions (we'll add these to Supabase later)
   reactions?: {
     like: number
     dislike: number
@@ -60,7 +59,6 @@ export default function Arena() {
       .select('*')
       .range(from, to)
 
-    // Apply ordering
     switch (orderBy) {
       case 'newest':
         query = query.order('created_at', { ascending: false })
@@ -69,11 +67,10 @@ export default function Arena() {
         query = query.order('created_at', { ascending: true })
         break
       case 'most_reactions':
-        // For now using votes_human + votes_grok as proxy
         query = query.order('votes_human', { ascending: false })
         break
       case 'most_comments':
-        query = query.order('created_at', { ascending: false }) // placeholder
+        query = query.order('created_at', { ascending: false })
         break
     }
 
@@ -95,7 +92,7 @@ export default function Arena() {
       setHasMore(initialThreads.length === 10)
     }
     loadInitial()
-  }, [orderBy]) // Reload when order changes
+  }, [orderBy])
 
   // Infinite scroll
   useEffect(() => {
@@ -134,8 +131,6 @@ export default function Arena() {
       return
     }
 
-    // For now, we'll just increment votes_human as a placeholder
-    // Later we'll add a proper reactions table
     const thread = threads.find(t => t.id === id)
     if (!thread) return
 
@@ -167,148 +162,27 @@ export default function Arena() {
   }
 
   return (
-    <div style={{ paddingTop: '4rem' }}>
-      {/* Sticky Filter Bar */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        background: 'rgba(10, 10, 31, 0.95)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(168, 85, 247, 0.2)',
-        padding: '12px 0'
+    <div>
+      {/* Hero Section */}
+      <div style={{ 
+        textAlign: 'center', 
+        padding: '80px 24px 60px',
+        background: 'linear-gradient(180deg, rgba(168,85,247,0.08) 0%, transparent 100%)'
       }}>
-        <div style={{ 
-          maxWidth: '1280px', 
-          margin: '0 auto', 
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          flexWrap: 'wrap'
+        <h1 style={{ 
+          fontSize: '3.5rem', 
+          fontWeight: 700, 
+          marginBottom: '12px',
+          background: 'linear-gradient(90deg, #fff, #e5e7eb)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
         }}>
-          {/* Filter Tabs */}
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {[
-              { label: 'All', value: 'all' },
-              { label: 'Battles (Vote)', value: 'battle' },
-              { label: 'Memes', value: 'meme' },
-              { label: 'AI Content', value: 'ai_content' }
-            ].map(tab => (
-              <button
-                key={tab.value}
-                onClick={() => setFilter(tab.value as any)}
-                style={{
-                  padding: '10px 20px',
-                  border: 'none',
-                  borderRadius: '9999px',
-                  background: filter === tab.value ? '#a855f7' : '#18181b',
-                  color: filter === tab.value ? '#fff' : '#e5e7eb',
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                  fontSize: '14px',
-                  transition: 'all 0.2s'
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Ordering Dropdown */}
-          <select 
-            value={orderBy} 
-            onChange={(e) => setOrderBy(e.target.value as OrderBy)}
-            style={{
-              padding: '10px 16px',
-              background: '#18181b',
-              border: '1px solid #27272a',
-              borderRadius: '8px',
-              color: '#e5e7eb',
-              fontSize: '14px',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="most_reactions">Most Reactions</option>
-            <option value="most_comments">Most Comments</option>
-          </select>
-
-          <div style={{ flex: 1 }} />
-
-          {/* Auth */}
-          {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ color: '#e5e7eb', fontSize: '14px' }}>
-                @{user.user_metadata?.user_name}
-              </span>
-              <button 
-                onClick={handleLogout}
-                style={{
-                  padding: '8px 16px',
-                  background: '#333',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <button 
-              onClick={handleXLogin}
-              style={{
-                padding: '10px 20px',
-                background: 'linear-gradient(90deg, #a855f7, #22d3ee)',
-                color: '#000',
-                border: 'none',
-                borderRadius: '9999px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              🐦 Login with X
-            </button>
-          )}
-        </div>
+          GrokVsHumans Arena
+        </h1>
+        <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>
+          {filteredThreads.length} threads • Real-time Grok vs Humans
+        </p>
       </div>
-
-      // ... keep all your existing imports and logic ...
-
-return (
-  <div>
-    {/* Hero Section */}
-    <div style={{ 
-      textAlign: 'center', 
-      padding: '80px 24px 60px',
-      background: 'linear-gradient(180deg, rgba(168,85,247,0.08) 0%, transparent 100%)'
-    }}>
-      <h1 style={{ 
-        fontSize: '3.5rem', 
-        fontWeight: 700, 
-        marginBottom: '12px',
-        background: 'linear-gradient(90deg, #fff, #e5e7eb)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent'
-      }}>
-        GrokVsHumans Arena
-      </h1>
-      <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>
-        {filteredThreads.length} threads • Real-time Grok vs Humans
-      </p>
-    </div>
-
-    {/* Filter Bar - Now rendered in layout, but we can add ordering here if needed */}
-    {/* The sticky filter bar is in layout.tsx - we just need to make sure the tabs work */}
-    
-    {/* ... rest of your content (single column thread feed) ... */}
-  </div>
-)
 
       {/* Single Column Thread Feed */}
       <div style={{ 

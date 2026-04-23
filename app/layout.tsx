@@ -18,33 +18,77 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header className="header">
-          <div className="header__inner">
-            <div className="header__logo-row">
-              <a href="/" className="header__logo-link">
-                <div className="header__logo-circle">G</div>
-                <span className="header__title">GrokVsHumans</span>
+        {/* Main Header - Logo + Filter Bar + Auth */}
+        <header style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: 'rgba(10, 10, 31, 0.95)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(168, 85, 247, 0.2)'
+        }}>
+          <div style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: '0 24px',
+            height: '64px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '24px'
+          }}>
+            {/* Left: Logo + Title */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: '#fff' }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  background: 'linear-gradient(135deg, #a855f7, #22d3ee)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.4rem',
+                  fontWeight: '700',
+                  color: '#fff',
+                  boxShadow: '0 0 0 4px rgba(168, 85, 247, 0.3)'
+                }}>
+                  G
+                </div>
+                <span style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: '1.75rem',
+                  fontWeight: '700',
+                  letterSpacing: '-0.04em'
+                }}>
+                  GrokVsHumans
+                </span>
               </a>
             </div>
 
-            <nav className="header__nav">
-              <a href="#all" className="nav-link">All</a>
-              <a href="#battles" className="nav-link">Battles</a>
-              <a href="#memes" className="nav-link">Memes</a>
-              <a href="#ai" className="nav-link">AI Content</a>
-            </nav>
+            {/* Center: Sticky Filter Bar */}
+            <div id="filter-bar" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              background: 'rgba(24, 24, 27, 0.8)',
+              padding: '8px 16px',
+              borderRadius: '9999px',
+              border: '1px solid #27272a'
+            }}>
+              {/* Filter tabs will be injected here by page.tsx */}
+            </div>
 
+            {/* Right: Auth */}
             <AuthButton />
           </div>
         </header>
 
-        <main>{children}</main>
-
-        <footer className="footer">
-          <div className="footer__container">
-            <p>© {new Date().getFullYear()} GrokVsHumans • Built with ❤️ for the community</p>
-          </div>
-        </footer>
+        <main style={{ paddingTop: '64px' }}>
+          {children}
+        </main>
       </body>
     </html>
   )

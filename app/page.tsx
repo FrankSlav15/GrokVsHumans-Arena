@@ -278,26 +278,37 @@ export default function Arena() {
         </div>
       </div>
 
-      {/* Hero */}
-      <div style={{ 
-        textAlign: 'center', 
-        padding: '60px 24px 40px',
-        background: 'linear-gradient(180deg, rgba(168,85,247,0.1) 0%, transparent 100%)'
+      // ... keep all your existing imports and logic ...
+
+return (
+  <div>
+    {/* Hero Section */}
+    <div style={{ 
+      textAlign: 'center', 
+      padding: '80px 24px 60px',
+      background: 'linear-gradient(180deg, rgba(168,85,247,0.08) 0%, transparent 100%)'
+    }}>
+      <h1 style={{ 
+        fontSize: '3.5rem', 
+        fontWeight: 700, 
+        marginBottom: '12px',
+        background: 'linear-gradient(90deg, #fff, #e5e7eb)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent'
       }}>
-        <h1 style={{ 
-          fontSize: '3.5rem', 
-          fontWeight: 700, 
-          marginBottom: '12px',
-          background: 'linear-gradient(90deg, #fff, #e5e7eb)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
-          GrokVsHumans Arena
-        </h1>
-        <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>
-          {filteredThreads.length} threads • Real-time Grok vs Humans
-        </p>
-      </div>
+        GrokVsHumans Arena
+      </h1>
+      <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>
+        {filteredThreads.length} threads • Real-time Grok vs Humans
+      </p>
+    </div>
+
+    {/* Filter Bar - Now rendered in layout, but we can add ordering here if needed */}
+    {/* The sticky filter bar is in layout.tsx - we just need to make sure the tabs work */}
+    
+    {/* ... rest of your content (single column thread feed) ... */}
+  </div>
+)
 
       {/* Single Column Thread Feed */}
       <div style={{ 

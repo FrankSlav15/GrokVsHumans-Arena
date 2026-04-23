@@ -40,7 +40,7 @@ export default function Arena() {
   const [hasMore, setHasMore] = useState(true)
   const observerTarget = useRef<HTMLDivElement>(null)
 
-  // Rotating Background (RESTORED)
+  // Rotating Background
   useEffect(() => {
     const bgs = [
       '/assets/images/backgrounds/bg1.webp','/assets/images/backgrounds/bg2.webp',
@@ -61,6 +61,19 @@ export default function Arena() {
     document.body.style.backgroundRepeat = 'no-repeat'
     document.body.style.backgroundAttachment = 'fixed'
   }, [])
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedThread) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'visible'
+    }
+    
+    return () => {
+      document.body.style.overflow = 'visible'
+    }
+  }, [selectedThread])
 
   // Auth
   useEffect(() => {
@@ -185,7 +198,7 @@ export default function Arena() {
 
   return (
     <div>
-      {/* Sticky Filter Bar (RESTORED) */}
+      {/* Sticky Filter Bar */}
       <div style={{
         position: 'sticky',
         top: '64px',
@@ -412,12 +425,8 @@ export default function Arena() {
                       gap: '6px',
                       transition: 'all 0.1s'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#222'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent'
-                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#222' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                   >
                     <span>{r.emoji}</span>
                     <span style={{ fontSize: '12px', color: '#888' }}>
@@ -456,14 +465,14 @@ export default function Arena() {
         </div>
       </div>
 
-      {/* Thread Modal */}
+      {/* Thread Modal - Full Thread View */}
       {selectedThread && (
         <div 
           onClick={() => setSelectedThread(null)}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.9)',
+            background: 'rgba(0,0,0,0.92)',
             zIndex: 100,
             display: 'flex',
             alignItems: 'center',
@@ -477,10 +486,11 @@ export default function Arena() {
               background: '#18181b',
               borderRadius: '20px',
               width: '100%',
-              maxWidth: '720px',
-              maxHeight: '90vh',
+              maxWidth: '680px',
+              maxHeight: '92vh',
               overflow: 'auto',
-              border: '1px solid #27272a'
+              border: '1px solid #27272a',
+              boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.4)'
             }}
           >
             {/* Modal Header */}
@@ -489,7 +499,11 @@ export default function Arena() {
               borderBottom: '1px solid #27272a',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px'
+              gap: '12px',
+              position: 'sticky',
+              top: 0,
+              background: '#18181b',
+              zIndex: 10
             }}>
               <span style={{ 
                 background: selectedThread.type === 'battle' ? '#22c55e' : 
@@ -506,6 +520,22 @@ export default function Arena() {
                 {new Date(selectedThread.created_at).toLocaleDateString()}
               </span>
               <div style={{ flex: 1 }} />
+              {selectedThread.x_link && (
+                <a 
+                  href={selectedThread.x_link} 
+                  target="_blank"
+                  style={{ 
+                    color: '#3b82f6', 
+                    fontSize: '14px', 
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  View on X →
+                </a>
+              )}
               <button 
                 onClick={() => setSelectedThread(null)}
                 style={{ 
@@ -514,99 +544,159 @@ export default function Arena() {
                   color: '#888', 
                   fontSize: '28px',
                   cursor: 'pointer',
-                  lineHeight: 1
+                  lineHeight: 1,
+                  marginLeft: '8px'
                 }}
               >
                 ×
               </button>
             </div>
 
-            {/* Thread Content */}
+            {/* Thread Content - Styled as X Thread */}
             <div style={{ padding: '24px' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>
-                {selectedThread.title}
-              </h2>
               
-              <p style={{ color: '#ccc', fontSize: '15px', lineHeight: 1.7, marginBottom: '24px' }}>
-                {selectedThread.description || selectedThread.content}
-              </p>
+              {/* Original Post (Human) */}
+              <div style={{ 
+                display: 'flex', 
+                gap: '12px', 
+                marginBottom: '20px' 
+              }}>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #666, #444)',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '18px'
+                }}>
+                  H
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Human</span>
+                    <span style={{ color: '#666', fontSize: '14px' }}>@{selectedThread.author || 'user'}</span>
+                  </div>
+                  <div style={{ 
+                    color: '#e5e7eb', 
+                    fontSize: '15px', 
+                    lineHeight: 1.5,
+                    whiteSpace: 'pre-wrap'
+                  }}>
+                    {selectedThread.title}
+                  </div>
+                  {selectedThread.description && (
+                    <div style={{ 
+                      color: '#ccc', 
+                      fontSize: '15px', 
+                      lineHeight: 1.5,
+                      marginTop: '8px',
+                      whiteSpace: 'pre-wrap'
+                    }}>
+                      {selectedThread.description}
+                    </div>
+                  )}
+                </div>
+              </div>
 
+              {/* Grok's Reply */}
+              <div style={{ 
+                display: 'flex', 
+                gap: '12px', 
+                marginBottom: '24px' 
+              }}>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #a855f7, #22d3ee)',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '18px'
+                }}>
+                  G
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Grok</span>
+                    <span style={{ color: '#666', fontSize: '14px' }}>@grok</span>
+                  </div>
+                  <div style={{ 
+                    color: '#e5e7eb', 
+                    fontSize: '15px', 
+                    lineHeight: 1.6,
+                    whiteSpace: 'pre-wrap'
+                  }}>
+                    {selectedThread.content || 'This is where Grok\'s reply would appear. The back-and-forth continues here.'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Image if exists */}
               {selectedThread.image && (
                 <img 
                   src={selectedThread.image} 
                   alt={selectedThread.title}
-                  style={{ width: '100%', borderRadius: '12px', marginBottom: '24px' }}
+                  style={{ 
+                    width: '100%', 
+                    borderRadius: '12px', 
+                    marginBottom: '24px',
+                    maxHeight: '500px',
+                    objectFit: 'contain'
+                  }}
                 />
               )}
 
-              {/* X Thread Preview */}
+              {/* Reaction Bar */}
               <div style={{ 
-                background: '#111', 
-                borderRadius: '12px', 
-                padding: '20px',
+                display: 'flex', 
+                borderTop: '1px solid #27272a',
+                borderBottom: '1px solid #27272a',
+                background: '#111',
                 marginBottom: '24px'
               }}>
-                <div style={{ color: '#888', fontSize: '13px', marginBottom: '12px' }}>
-                  📌 Original X Thread
-                </div>
-                <div style={{ color: '#e5e7eb', lineHeight: 1.6 }}>
-                  {selectedThread.content || 'Click "View on X" to see the full conversation thread.'}
-                </div>
-                {selectedThread.x_link && (
-                  <a 
-                    href={selectedThread.x_link} 
-                    target="_blank"
-                    style={{ 
-                      display: 'inline-block',
-                      marginTop: '16px',
-                      color: '#3b82f6',
-                      textDecoration: 'none',
-                      fontWeight: '500'
+                {[
+                  { emoji: '👍', label: 'Like', key: 'like' },
+                  { emoji: '👎', label: 'Dislike', key: 'dislike' },
+                  { emoji: '😕', label: 'Wut?', key: 'wut' },
+                  { emoji: '😂', label: 'Funny', key: 'funny' },
+                  { emoji: '😈', label: 'Savage', key: 'savage' },
+                  { emoji: '💀', label: 'Fatality', key: 'fatality' }
+                ].map((r) => (
+                  <button
+                    key={r.key}
+                    onClick={() => handleReaction(selectedThread.id, r.key as any)}
+                    style={{
+                      flex: 1,
+                      padding: '14px 8px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#e5e7eb',
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.1s'
                     }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#222' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                   >
-                    View full thread on X →
-                  </a>
-                )}
-              </div>
-
-              {/* Reactions */}
-              <div style={{ marginBottom: '32px' }}>
-                <div style={{ color: '#888', fontSize: '14px', marginBottom: '12px' }}>
-                  React to this thread:
-                </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {[
-                    { emoji: '👍', label: 'Like', key: 'like' },
-                    { emoji: '👎', label: 'Dislike', key: 'dislike' },
-                    { emoji: '😕', label: 'Wut?', key: 'wut' },
-                    { emoji: '😂', label: 'Funny', key: 'funny' },
-                    { emoji: '😈', label: 'Savage', key: 'savage' },
-                    { emoji: '💀', label: 'Fatality', key: 'fatality' }
-                  ].map((r) => (
-                    <button
-                      key={r.key}
-                      onClick={() => handleReaction(selectedThread.id, r.key as any)}
-                      style={{
-                        padding: '10px 16px',
-                        background: '#222',
-                        border: '1px solid #333',
-                        borderRadius: '9999px',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '14px'
-                      }}
-                    >
-                      <span>{r.emoji}</span>
-                      <span>{r.label}</span>
-                      <span style={{ color: '#666', fontSize: '12px' }}>
-                        {selectedThread.reactions?.[r.key as keyof typeof selectedThread.reactions] || 0}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                    <span>{r.emoji}</span>
+                    <span style={{ fontSize: '12px', color: '#888' }}>
+                      {selectedThread.reactions?.[r.key as keyof typeof selectedThread.reactions] || 0}
+                    </span>
+                  </button>
+                ))}
               </div>
 
               {/* Comments Section */}
@@ -645,6 +735,7 @@ export default function Arena() {
                   Comments coming soon. This will allow users to discuss the thread directly on the site.
                 </div>
               </div>
+
             </div>
           </div>
         </div>
